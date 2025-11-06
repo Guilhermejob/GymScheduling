@@ -1,21 +1,31 @@
+using GymScheduling.Application.Services;
+using GymScheduling.Data;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configuração do banco de dados (SQL Server)
 builder.Services.AddDbContext<GymDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Adiciona Controllers (para usarmos o padrão MVC Controllers)
-builder.Services.AddControllers();
+builder.Services.AddScoped<SchedulingService>();
 
-// Configuração do Swagger para documentação
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+    });
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configuração do pipeline HTTP
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<GymDbContext>();
+    db.Database.Migrate();
+}
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -26,7 +36,6 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
-// Mapeia os Controllers
 app.MapControllers();
 
 app.Run();
