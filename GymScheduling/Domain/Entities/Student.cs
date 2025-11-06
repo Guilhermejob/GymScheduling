@@ -8,5 +8,6 @@ namespace GymScheduling.Domain.Entities
         public Guid Id { get; set; }
         public string Name { get; set; } = null!;
         public PlanType Plan { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }
