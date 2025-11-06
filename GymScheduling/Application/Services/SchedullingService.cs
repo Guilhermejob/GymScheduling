@@ -32,6 +32,14 @@ namespace GymScheduling.Application.Services
                 var existing = await _db.Schedullings.AnyAsync(s => s.StudentId == studentId && s.ClassSessionId == classSessionId);
                 if (existing) return Result.Failure("Aluno já está inscrito nesta aula");
 
+                var hasConflict = await _db.Schedullings.Include(s => s.ClassSession).AnyAsync(s =>
+                    s.StudentId == studentId &&
+                    s.ClassSession.StartTime.Date == session.StartTime.Date &&
+                    s.ClassSession.StartTime.Hour == session.StartTime.Hour
+
+                );
+                if (hasConflict) return Result.Failure("Aluno já possui outra aula nesse horário.");
+
                 var currentCount = await _db.Schedullings.CountAsync(s => s.ClassSessionId == classSessionId);
                 if (currentCount >= session.Capacity) return Result.Failure("Aula está cheia");
 
