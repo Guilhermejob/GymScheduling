@@ -1,6 +1,7 @@
-﻿namespace GymScheduling.Domain.Entities
+﻿using GymScheduling.Domain.Enums;
+
+namespace GymScheduling.Domain.Entities
 {
-    public enum PlanType { Mensal = 1, Trimestral = 2, Anual = 3 }
 
     public class Student
     {
