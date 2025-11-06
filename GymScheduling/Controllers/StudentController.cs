@@ -58,5 +58,12 @@ namespace GymScheduling.Controllers
 
             return Ok(new { Student = student, TotalThisMonth = total, TopTypes = types });
         }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Student>>> GetAllStudents()
+        {
+            var students = await _db.Students.ToListAsync();
+            return Ok(students);
+        }
     }
 }
