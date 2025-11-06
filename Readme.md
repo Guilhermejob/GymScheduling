@@ -18,6 +18,8 @@ API REST desenvolvida em **C# (.NET 8)** para gerenciar **aulas coletivas em aca
   - Data e hora
   - Capacidade máxima de alunos  
 
+
+
 ### 📅 Agendamentos
 - Um aluno pode se inscrever em aulas, respeitando:
   - Capacidade máxima da turma  
@@ -156,26 +158,27 @@ Swagger disponível na raiz (caso configurado com `RoutePrefix = string.Empty`).
 
 ## 🔐 Endpoints Principais
 
-### 👨‍🎓 Alunos
+### 👩‍🎓 Alunos
 
-**GET** `/api/students`  
-**POST** `/api/students`
+#### GET `/api/Students`
+Lista todos os alunos.
 
-#### 🧾 Exemplo de requisição
+#### POST `/api/Students`
+Cria um novo aluno.
 
+##### Exemplo de requisição
 ```json
 {
-  "name": "Carlos Silva",
+  "name": "João Silva",
   "plan": "Mensal"
 }
 ```
 
-#### 🧾 Exemplo de resposta
-
+##### Exemplo de resposta
 ```json
 {
-  "id": "8b8a41f2-5db6-4e21-a7f4-734f77f3f0c2",
-  "name": "Carlos Silva",
+  "id": "b7c1234f-8f9a-4a34-9df2-ffbabc123123",
+  "name": "João Silva",
   "plan": "Mensal"
 }
 ```
@@ -184,27 +187,43 @@ Swagger disponível na raiz (caso configurado com `RoutePrefix = string.Empty`).
 
 ### 🧘‍♀️ Aulas
 
-**GET** `/api/classes`  
-**POST** `/api/classes`
+#### GET `/api/ClassSession`
+Lista todas as aulas cadastradas.
 
-#### 🧾 Exemplo de requisição
+#### GET `/api/ClassSession/{id}`
+Retorna uma aula específica (com agendamentos incluídos).
 
+#### POST `/api/ClassSession`
+Cria uma nova aula.  
+⚠️ Inclui verificação para **não permitir duas aulas no mesmo local e horário**.
+
+##### Exemplo de requisição
 ```json
 {
-  "type": "Cross",
-  "startAt": "2025-11-10T18:00:00",
-  "capacity": 10
+  "classType": "Boxe",
+  "startAt": "2025-11-10T05:32:37.938Z",
+  "capacity": 10,
+  "location": "Sala 01",
+  "instructor": "Balboa"
 }
 ```
 
-#### 🧾 Exemplo de resposta
-
+##### Exemplo de resposta (sucesso)
 ```json
 {
-  "id": "f45b7231-3b0f-4b32-9a16-f0ec90a7d3e7",
-  "type": "Cross",
-  "startAt": "2025-11-10T18:00:00",
-  "capacity": 10
+  "id": "ecafbb40-1122-4b21-881a-67f3ed6c1cc9",
+  "classType": "Boxe",
+  "startAt": "2025-11-10T05:32:37.938Z",
+  "capacity": 10,
+  "location": "Sala 01",
+  "instructor": "Balboa"
+}
+```
+
+##### Exemplo de resposta (erro)
+```json
+{
+  "message": "Já existe uma aula agendada neste local e horário."
 }
 ```
 
@@ -212,48 +231,48 @@ Swagger disponível na raiz (caso configurado com `RoutePrefix = string.Empty`).
 
 ### 📅 Agendamentos
 
-**POST** `/api/bookings`
+#### POST `/api/Booking`
+Agenda um aluno em uma aula, respeitando todas as regras.
 
-#### 🧾 Exemplo de requisição
-
+##### Exemplo de requisição
 ```json
 {
-  "studentId": "8b8a41f2-5db6-4e21-a7f4-734f77f3f0c2",
-  "classSessionId": "f45b7231-3b0f-4b32-9a16-f0ec90a7d3e7"
+  "studentId": "b7c1234f-8f9a-4a34-9df2-ffbabc123123",
+  "classSessionId": "ecafbb40-1122-4b21-881a-67f3ed6c1cc9"
 }
 ```
 
-#### 🧾 Exemplo de resposta (sucesso)
-
+##### Exemplo de resposta (sucesso)
 ```json
-{
-  "success": true,
-  "message": "Agendamento realizado com sucesso."
-}
+{ "success": true }
 ```
 
-#### 🧾 Exemplo de resposta (falha)
+##### Exemplo de resposta (falha)
+```json
+{ "message": "Aluno já inscrito nesta aula" }
+```
+
+Ou:
 
 ```json
-{
-  "success": false,
-  "message": "Limite mensal do plano atingido."
-}
+{ "message": "Aluno já possui uma aula agendada neste horário" }
 ```
 
 ---
 
 ### 📊 Relatórios
 
-**GET** `/api/reports/{studentId}`
+#### GET `/api/Reports/{studentId}`
+Retorna um resumo com:
+- Total de aulas agendadas no mês;
+- Modalidades mais frequentes.
 
-#### 🧾 Exemplo de resposta
-
+##### Exemplo de resposta
 ```json
 {
-  "student": "Carlos Silva",
-  "totalClassesThisMonth": 10,
-  "mostFrequentClassTypes": ["Cross", "Pilates"]
+  "student": "João Silva",
+  "totalAulasNoMes": 8,
+  "modalidadesFrequentes": ["Crossfit", "Funcional"]
 }
 ```
 
