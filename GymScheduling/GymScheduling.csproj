@@ -30,7 +30,6 @@
   <ItemGroup>
     <Folder Include="Controllers\" />
     <Folder Include="Data\Migrations\" />
-    <Folder Include="Domain\Entities\" />
     <Folder Include="Domain\Enums\" />
     <Folder Include="Domain\ValueObjects\" />
     <Folder Include="DTOs\" />
