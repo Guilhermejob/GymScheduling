@@ -2,8 +2,6 @@
 using GymScheduling.Domain.Entities;
 
 
-namespace GymScheduling.Data;
-
 public class GymDbContext : DbContext
 {
     public GymDbContext(DbContextOptions<GymDbContext> options) : base(options) { }
@@ -15,7 +13,5 @@ public class GymDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Scheduling>().HasIndex(b => new { b.StudentId, b.ClassSessionId }).IsUnique();
-        // aqui configure relacionamentos, se necessário 
     }
-
 }
